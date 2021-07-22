@@ -1,0 +1,57 @@
+#Instalacao do manager do rabbitmq
+rabbitmq-plugins enable rabbitmq_management
+
+#Comandos de inicializacao
+													
+
+#Alterar defauls do rabbit (opcional)
+
+##Alterar nome
+set RABBITMQ_NODENAME= <nome do servidor>
+
+##Alterar porta
+set RABBITMQ_NODE_PORT=<porta do servidor>
+
+##Configurar qual porta o manager ira ouvir
+
+set RABBITMQ_SERVER_START_ARGS=-rabbitmq_management listener [{port,15672}]
+
+
+#Comandos do rabbitmqadmin
+
+##Queue
+python rabbitmqadmin declare queue --vhost=/ name=some_outgoing_queue durable=true
+
+#Exchange
+python rabbitmqadmin declare exchange --vhost=/ name=some_exchange type=direct
+
+#Binding
+python rabbitmqadmin --vhost=/ declare binding source="some_exchange" destination_type="queue" destination="some_outgoing_queue" routing_key="some_routing_key"
+
+#Clusterização (Setup - Comandos)
+
+##Primeiro servidor
+set RABBITMQ_NODENAME=rabbit1
+
+set RABBITMQ_NODE_PORT=5672
+
+set RABBITMQ_SERVER_START_ARGS=-rabbitmq_management listener [{port,15672}]
+
+rabbitmq-server start
+
+##Segundo Servidor
+set RABBITMQ_NODENAME=rabbit2
+
+set RABBITMQ_NODE_PORT=5673
+
+set RABBITMQ_SERVER_START_ARGS=-rabbitmq_management listener [{port,15673}]
+
+rabbitmq-server start
+
+##Juntar segundo servidor ao cluster do primeiro
+
+rabbitmqctl -n rabbit2 stop_app
+
+rabbitmqctl -n rabbit2 join_cluster rabbit1
+
+rabbitmqctl -n rabbit2 start_app

@@ -1,0 +1,16 @@
+{
+  "name": "rabbitmq",
+  "version": "1.0.0",
+  "description": "",
+  "main": "1_sender.js",
+  "scripts": {
+    "pm2": "pm2 start ecosystem.config.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.6.0",
+    "rabbit-client": "^1.1.6",
+    "rabbit-queue": "^5.0.1"
+  }
+}
